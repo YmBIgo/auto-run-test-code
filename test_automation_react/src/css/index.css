@@ -1,0 +1,83 @@
+/* Common UI */
+.app-select {
+	width:200px;
+	height:30px;
+	border:1px solid rgba(0, 50, 200, .4);
+}
+.app-button-primary {
+	width:100px;
+	height:30px;
+	margin:10px 0;
+	border-radius:5px;
+	background-color:#007bff;
+	border-color:#007bff;
+	color:white;
+}
+.app-button-primary:disabled {
+	background-color: rgba(0, 100, 255, .4);
+	border-color:rgba(0, 100, 255, .2);
+}
+.app-text-input {
+	width:200px;
+	height:30px;
+	border:1px solid rgba(50, 100, 250, .6);
+	border-radius:5px;
+}
+.app-h6-without-margin {
+	margin:0px 10px;
+}
+.app-small-small {
+	font-size:10px;
+	color: rgba(100, 100, 100, .9);
+}
+
+/* Web UI */
+.App {
+	display:flex;
+}
+.app-left {
+	width:45%;
+	border:1px solid black;
+	margin-right:1%;
+	margin-left:4%;
+	padding:10px;
+	height:600px;
+	overflow:scroll;
+	background-color:rgba(100, 100, 100, .1);
+}
+.app-left-command-element {
+	border:1px solid black;
+	border-radius:5px;
+	width:80%;
+	margin-left:10%;
+	margin-right:10%;
+	margin-bottom:10px;
+	padding:10px;
+	background-color:white;
+}
+.focused-app-left-command-element {
+	border:2px solid rgba(50, 50, 200, .6) !important;
+	background-color:rgba(50, 50, 200, .1);
+}
+.app-left-command-detail-area {
+
+}
+.app-left-command-down-arrow {
+	width:0;
+	height:0;
+	margin-left:47%;
+	margin-bottom:10px;
+	border-left:  15px solid transparent;
+	border-right: 15px solid transparent;
+	border-top: 15px solid black;
+}
+.app-right {
+	width:45%;
+	border:1px solid black;
+	margin-left:1%;
+	margin-right:4%;
+	padding:10px;
+	height:300px;
+}
+
+
