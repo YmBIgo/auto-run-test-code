@@ -1,5 +1,5 @@
 
-import {COMMAND_ELEMENTS, COMMAND_ELEMENT} from "../type/command"
+import {COMMAND_ELEMENTS, COMMAND_ELEMENT} from "../../type/command"
 
 type Props = {
 	setCommandResultEachNormal: Function;

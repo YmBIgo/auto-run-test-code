@@ -1,5 +1,7 @@
 export type COMMAND_ELEMENTS = (COMMAND_ELEMENT)[]
 export type COMMAND_ELEMENT = COMMAND_ELEMENT1 | COMMAND_ELEMENT2 | COMMAND_ELEMENT3 | COMMAND_ELEMENT4 | COMMAND_ELEMENT5 | COMMAND_ELEMENT6 | COMMAND_ELEMENT7 | COMMAND_ELEMENT2_FIN | COMMAND_ELEMENT3_FIN
+export type COMMAND_IF_ELEMENTS = COMMAND_ELEMENT3 | COMMAND_ELEMENT4 | COMMAND_ELEMENT5 | COMMAND_ELEMENT6 | COMMAND_ELEMENT2_FIN
+export type COMMAND_WHILE_ELEMENTS = COMMAND_ELEMENT4 | COMMAND_ELEMENT5 | COMMAND_ELEMENT6 | COMMAND_ELEMENT3_FIN
 
 export type COMMAND_ELEMENT1 = {command_id: 0; variable: string; xpath?: undefined; xpath_index?: undefined; is_variable?: undefined; content?: undefined; commands?: undefined, sign_type?: undefined}
 export type COMMAND_ELEMENT2 = {command_id: 1; commands: (COMMAND_ELEMENT3 | COMMAND_ELEMENT4 | COMMAND_ELEMENT5 | COMMAND_ELEMENT6 | COMMAND_ELEMENT2_FIN)[]; variable?: undefined; xpath?: undefined; xpath_index?: undefined; is_variable?: undefined; content?: undefined, sign_type?: undefined}
