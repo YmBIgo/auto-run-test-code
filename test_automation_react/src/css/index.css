@@ -46,6 +46,7 @@
 /* Web UI */
 .App {
 	display:flex;
+	margin-top:30px;
 }
 .app-left {
 	width:45%;
