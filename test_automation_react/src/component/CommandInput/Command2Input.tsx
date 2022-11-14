@@ -1,7 +1,8 @@
-import React from "react"
+import React, {useEffect} from "react"
 import {COMMAND_ELEMENTS, COMMAND_ELEMENT} from "../../type/command"
 import {COMMANDS, COMMANDS_STR_IF_VERSION,
-		COMMAND_STR_INDEX_IF_VERSION, COMMAND_STR_HASH} from "../../App"
+		COMMAND_STR_INDEX_IF_VERSION, COMMAND_STR_HASH,
+		sign_type} from "../../App"
 import IfCommand4Input from "../../component/CommandInput/IfCommand4Input"
 import IfCommand5Input from "../../component/CommandInput/IfCommand5Input"
 import IfCommand6Input from "../../component/CommandInput/IfCommand6Input"
@@ -10,11 +11,13 @@ import Command5Output from "../../component/CommandOutput/Command5Output"
 import Command6Output from "../../component/CommandOutput/Command6Output"
 
 type Props = {
+	setIfCommandResultEachNormal: Function;
 	setCommandResultEachNormal: Function;
 	onChangeIfCommand: Function;
 	createCommandInputIfVersion: Function;
 	unFocusIfCommandElement: Function;
 	reFocusIfCommandElement: Function;
+	reFocusIfCommandBlock: Function;
 	current_left_command_if_command: number;
 	command_results: COMMAND_ELEMENTS;
 	command_result: COMMAND_ELEMENT;
@@ -25,9 +28,11 @@ type Props = {
 
 const Command2Input = (props: Props) => {
 
-	const setIfCommandResultEachNormal = props.setCommandResultEachNormal;
-	const unFocusIfCommandElement = props.unFocusIfCommandElement;
+	const setIfCommandResultEachNormal = props.setIfCommandResultEachNormal
+	const setCommandResultEachNormal = props.setCommandResultEachNormal
+	const unFocusIfCommandElement = props.unFocusIfCommandElement
 	const reFocusIfCommandElement = props.reFocusIfCommandElement
+	const reFocusIfCommandBlock = props.reFocusIfCommandBlock
 	const onChangeIfCommand = props.onChangeIfCommand
 	const current_left_command_if_command = props.current_left_command_if_command
 	const index = props.index
@@ -37,8 +42,40 @@ const Command2Input = (props: Props) => {
 	const command_result = props.command_result
 	const is_if_command_focused = props.is_if_command_focused
 
+	useEffect(() => {
+	}, [])
+
 	return(
 		<>
+		<div className="app-left-command-detail-area-small" onClick={() => {unFocusIfCommandElement(index); reFocusIfCommandBlock(index)}}>
+		  <h6 className="app-h6-without-margin">条件入力</h6>
+		  <hr/>
+		  <label><small>右項(変数)</small></label>
+		  <br/>
+		  <select className="app-select" onChange={(e) => setCommandResultEachNormal(e, "condition1", index)} value={command_result.condition1}>
+		  	<option></option>
+		  	{ command_results.filter((c_r) => c_r.command_id === 0).map((c_result, c_index) => {
+		  		return (
+		  			<option key={`if_condition1_variable_${c_index}`} value={c_result.variable}>{c_result.variable}</option>
+		  		)
+		  	})}
+		  </select>
+		  <br/>
+		  <label><small>左項(文字列)</small></label>
+		  <br/>
+		  <input type="text" className="app-text-input" value={command_result.condition2} onChange={(e) => setCommandResultEachNormal(e, "condition2", index)}/>
+		  <br/>
+		  <label><small>等号など</small></label>
+		  <br/>
+		  <select className="app-select" onChange={(e) => setCommandResultEachNormal(e, "condition_sign", index)} value={command_result.condition_sign}>
+		  	<option></option>
+		  	{sign_type.map((sign, s_index) => {
+		  		return(
+		  			<option key={`if_condition_sign_${s_index}`} value={sign}>{sign}</option>
+		  		)
+		  	})}
+		  </select>
+		</div>
 		<div className="app-left-command-detail-area-small" onClick={() => unFocusIfCommandElement(index)}>
 		  <h6 className="app-h6-without-margin">命令入力</h6>
 		  <select className="app-select" onChange={(e) => onChangeIfCommand(e)} value={current_left_command_if_command}>
@@ -53,7 +90,8 @@ const Command2Input = (props: Props) => {
 		</div>
 		<div className="app-left-command-detail-area-small-down-arrow"></div>
 		<>
-		  {if_command_results.map((if_command_result, i_index) => {
+		  {command_result.commands &&
+		  	command_result.commands.map((if_command_result, i_index) => {
 		    return(
 		      <React.Fragment key={`if_command_${i_index}`}>
 		        { is_if_command_focused === i_index ?

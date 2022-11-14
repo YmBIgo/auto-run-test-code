@@ -10,7 +10,10 @@ const Command2Output = (props: Props) => {
 
 	return(
 		<>
-		  { (command_result.commands && command_result.commands.some((c_r) => c_r.command_id === 101) === true) ?
+		  { (command_result.commands && command_result.commands.some((c_r) => c_r.command_id === 101) === true &&
+		  	 command_result.condition1 !== undefined && command_result.condition1.length !== 0 &&
+		  	 command_result.condition2 !== undefined && command_result.condition2.length !== 0 &&
+		  	 command_result.condition_sign !== undefined && command_result.condition_sign.length !== 0) ?
 		    (command_result.commands && command_result.commands.every((c_r: COMMAND_ELEMENT) => {
 		      if (c_r.command_id === 3) {
 		        return c_r.xpath !== undefined && c_r.xpath_index !== undefined && c_r.variable !== undefined && c_r.xpath!.length !== 0 && c_r.variable!.length !== 0
@@ -34,7 +37,7 @@ const Command2Output = (props: Props) => {
 		      <small>編集中の内容があります。</small>
 		    </div>
 		    :
-		    <div><hr/><small>If文を終了して下さい。</small></div>
+		    <div><hr/><small>条件式を入力して、If文を終了して下さい。</small></div>
 		  }
 		</>
 	)

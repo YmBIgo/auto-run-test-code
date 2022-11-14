@@ -42,14 +42,15 @@ export const COMMANDS_STR_WHILE_VERSION = ["変数代入", "クリック", "文�
 export const COMMAND_STR_HASH = {0: "変数作成", 1: "If文", 2: "While文", 3: "変数代入", 4: "クリック", 5: "文字入力", 6 : "結果チェック", 101: "If終了", 201: "While終了"}
 export const COMMAND_STR_INDEX_IF_VERSION = [3, 4, 5, 101]
 type COMMAND_KEYS = "variable" | "xpath" | "xpath_index" | "content" | "is_variable" | "sign_type"
-const sign_type = ["=", "!="]
+export const sign_type = ["=", "!="]
 
 function App() {
 
   // right web ui
   const [current_right_message, set_current_right_message] = useState<string>("入力する命令を選択して下さい")
   const [current_right_command, set_current_right_command] = useState<number>(0) 
-  const [right_command_input_is_disabled, set_right_command_input_is_disabled] = useState<boolean>(false)
+  const [right_command_input_is_disabled, set_right_command_input_is_disabled] = useState<boolean>(true)
+  const [current_url, set_current_url] = useState<string>("")
   // left web ui
   const [is_left_ui_focused, set_is_left_ui_focused] = useState<number | null>(null)
   const [current_left_command_if_command, set_current_left_command_if_command] = useState<number>(0)
@@ -74,9 +75,9 @@ function App() {
     set_right_command_input_is_disabled(true)
     let created_command: COMMAND_ELEMENT = {command_id: 0, variable: ""};
     if (current_right_command === 1) {
-      created_command = {command_id: 1, commands: []}
+      created_command = {command_id: 1, commands: [], condition1: "", condition2: "", condition_sign: ""}
     } else if (current_right_command === 2) {
-      created_command = {command_id: 2, commands: []}
+      created_command = {command_id: 2, commands: [], condition1: ""}
     } else if (current_right_command === 3) {
       created_command = {command_id: 3, xpath: "", xpath_index: 0, variable: ""}
     } else if (current_right_command === 4) {
@@ -87,6 +88,12 @@ function App() {
       created_command = {command_id: 6, variable: "", content: "", sign_type: ""}
     }
     set_command_results([...command_results, created_command])
+  }
+  const deleteCommandResult = (index: number) => {
+    set_command_results((prev_command_results) => {
+      prev_command_results.splice(index, 1)
+      return [...prev_command_results]
+    })
   }
 
   const reFocusLeftCommandElement = (index: number) => {
@@ -119,9 +126,14 @@ function App() {
 
   // if
   const reFocusIfCommandElement = (index: number, i_index: number) => {
-    if (is_left_ui_focused !== index ) { return }
     set_left_command_if_command_is_disabled(true)
     set_is_if_command_focused(i_index)
+    const new_command_result_commands = command_results[index].commands
+    set_if_command_results(new_command_result_commands as COMMAND_IF_ELEMENTS[])
+  }
+  const reFocusIfCommandBlock = (index: number) => {
+    const new_command_result_commands = command_results[index].commands
+    set_if_command_results(new_command_result_commands as COMMAND_IF_ELEMENTS[])
   }
   const unFocusIfCommandElement = (index: number) => {
     if (is_left_ui_focused !== index ) { return }
@@ -136,6 +148,7 @@ function App() {
     set_current_left_command_if_command(Number(e.target.value))
   }
   const createCommandInputIfVersion = (index: number) => {
+    reFocusIfCommandBlock(index)
     const is_fin_exists = if_command_results.some((i_c_result) => {
       return i_c_result.command_id === 101
     })
@@ -155,8 +168,13 @@ function App() {
       created_command = {command_id: 101}
     }
     set_if_command_results([...if_command_results, created_command])
-    set_command_results((prev_command_results) => {
-      prev_command_results.splice(index, 1, {command_id: 1, commands: [...if_command_results, created_command]})
+    set_command_results((prev_command_results: COMMAND_ELEMENTS) => {
+      const newly_insert_command_result: COMMAND_ELEMENT2 = {command_id: 1, commands: [...if_command_results, created_command], condition1: prev_command_results[index].condition1!, condition2: prev_command_results[index].condition2!, condition_sign: prev_command_results[index].condition_sign!}
+      if (prev_command_results[index].condition1 !== undefined && prev_command_results[index].condition2 !== undefined && prev_command_results[index].condition_sign !== undefined ) {
+        prev_command_results.splice(index, 1, newly_insert_command_result)
+      } else {
+        prev_command_results.splice(index, 1, {command_id: 1, commands: [...if_command_results, created_command], condition1: "", condition2: "", condition_sign: ""})
+      }
       return [...prev_command_results]
     })
   }
@@ -190,7 +208,13 @@ function App() {
   return (
     <div className="App">
       <div className="app-left" onClick={() => {unFocusLeftCommandElement();}}>
-        {command_results.map((c_result, index) => {
+        <div className="app-left-command-element">
+          {current_url ? `${current_url}を自動化` : "自動化するURLを右から入力して下さい。" }
+        </div>
+        {command_results.length === 0 ?
+          <div><h3>自動化が設定されていません。</h3></div>
+          :
+          command_results.map((c_result, index) => {
           return (
             <React.Fragment key={`command_element_${index}`}>
               <div
@@ -199,7 +223,15 @@ function App() {
               >
                 { is_left_ui_focused === index ?
                   <>
-                    <h6 className="app-h6-without-margin">{index+1} : {COMMANDS_STR[c_result.command_id]}</h6>
+                    <h6 className="app-h6-without-margin">
+                      {index+1} : {COMMANDS_STR[c_result.command_id]}
+                      <input
+                        type="button"
+                        value="削除する"
+                        className="app-button-danger"
+                        onClick={() => deleteCommandResult(index)}
+                      />
+                    </h6>
                     <hr/>
                     {c_result.command_id === 0 &&
                       <Command1Input
@@ -211,11 +243,13 @@ function App() {
                     }
                     {c_result.command_id === 1 &&
                       <Command2Input
-                        setCommandResultEachNormal={setIfCommandResultEachNormal}
+                        setIfCommandResultEachNormal={setIfCommandResultEachNormal}
+                        setCommandResultEachNormal={setCommandResultEachNormal}
                         onChangeIfCommand={onChangeIfCommand}
                         createCommandInputIfVersion={createCommandInputIfVersion}
                         unFocusIfCommandElement={unFocusIfCommandElement}
                         reFocusIfCommandElement={reFocusIfCommandElement}
+                        reFocusIfCommandBlock={reFocusIfCommandBlock}
                         current_left_command_if_command={current_left_command_if_command}
                         command_results={command_results}
                         command_result={c_result}
@@ -223,89 +257,6 @@ function App() {
                         index={index}
                         is_if_command_focused={is_if_command_focused}
                       />
-                  //     <>
-                  //     <div className="app-left-command-detail-area-small" onClick={() => unFocusIfCommandElement(index)}>
-                  //       <h6 className="app-h6-without-margin">命令入力</h6>
-                  //       <select className="app-select" onChange={(e) => onChangeIfCommand(e)} value={current_left_command_if_command}>
-                  //         {COMMANDS_STR_IF_VERSION.map((c_str, i_c_index) => {
-                  //           return(
-                  //             <option value={COMMAND_STR_INDEX_IF_VERSION[i_c_index]} key={`command_${i_c_index}`}>{c_str}</option>
-                  //           )
-                  //         })}
-                  //       </select>
-                  //       <br/>
-                  //       <input type="button" className="app-button-primary" value="追加する" onClick={() => createCommandInputIfVersion(index)}/>
-                  //     </div>
-                  //     <div className="app-left-command-detail-area-small-down-arrow"></div>
-                  //     <>
-                  //       {if_command_results.map((if_command_result, i_index) => {
-                  //         return(
-                  //           <React.Fragment key={`if_command_${i_index}`}>
-                  //             { is_if_command_focused === i_index ?
-                  //             <div className="app-left-command-detail-area-small" onClick={(e) => {reFocusIfCommandElement(index, i_index); e.stopPropagation()}}>
-                  //               <h6 className="app-h6-without-margin">{COMMAND_STR_HASH[if_command_result.command_id]}</h6>
-                  //               <hr/>
-                  //               { if_command_result.command_id === 3 &&
-                  //                 <IfCommand4Input
-                  //                   setCommandResultEachNormal={setIfCommandResultEachNormal}
-                  //                   command_results={command_results}
-                  //                   command_result={c_result}
-                  //                   index={index}
-                  //                   if_index={i_index}
-                  //                 />
-                  //               }
-                  //               { if_command_result.command_id === 4 &&
-                  //                 <IfCommand5Input
-                  //                   setCommandResultEachNormal={setIfCommandResultEachNormal}
-                  //                   command_results={command_results}
-                  //                   command_result={c_result}
-                  //                   index={index}
-                  //                   if_index={i_index}
-                  //                 />
-                  //               }
-                  //               { if_command_result.command_id === 5 &&
-                  //                 <IfCommand6Input
-                  //                   setCommandResultEachNormal={setIfCommandResultEachNormal}
-                  //                   command_results={command_results}
-                  //                   command_result={c_result}
-                  //                   index={index}
-                  //                   if_index={i_index}
-                  //                 />
-                  //               }
-                  //               { if_command_result.command_id === 101 &&
-                  //                 <div className="app-left-command-detail-area">
-                  //                   <small>If文終了</small>
-                  //                 </div>
-                  //               }
-                  //             </div>
-                  //             :
-                  //             <div className="app-left-command-detail-area-small" onClick={(e) => {reFocusIfCommandElement(index, i_index); e.stopPropagation()}}>
-                  //               <h6 className="app-h6-without-margin">{COMMAND_STR_HASH[if_command_result.command_id]}</h6>
-                  //               { if_command_result.command_id === 3 &&
-                  //                 <Command4Output command_result={if_command_result}/>
-                  //               }
-                  //               { if_command_result.command_id === 4 &&
-                  //                 <Command5Output command_result={if_command_result}/>
-                  //               }
-                  //               { if_command_result.command_id === 5 &&
-                  //                 <Command6Output command_result={if_command_result}/>
-                  //               }
-                  //               { if_command_result.command_id === 101 &&
-                  //                 <>
-                  //                   <hr/>
-                  //                   <small>If文終了</small>
-                  //                 </>
-                  //               }
-                  //             </div>
-                  //             }
-                  //             { if_command_result.command_id !== 101 &&
-                  //               <div className="app-left-command-detail-area-small-down-arrow"></div>
-                  //             }
-                  //           </React.Fragment>
-                  //         )
-                  //       })}
-                  //     </>
-                  //     </>
                     }
                     {c_result.command_id === 2 &&
                       <div className="app-left-command-detail-area-small">
@@ -401,7 +352,10 @@ function App() {
         })}
       </div>
       <div className="app-right">
-        <h4>{current_right_message}</h4>
+        <h4 className="app-h4-without-margin">サイトURLを入力して下さい。</h4>
+        <br/>
+        <input className="app-text-input" style={{width: "300px"}} type="text" value={current_url} onChange={(e) => {set_current_url(e.target.value); set_right_command_input_is_disabled(false)}}/>
+        <h4 className="app-h4-without-margin">{current_right_message}</h4>
         <select className="app-select" disabled = {right_command_input_is_disabled} value={current_right_command} onChange={(e) => onChangeRightCommand(e)} >
           {COMMANDS_STR.map((c_str, index) => {
             return(
