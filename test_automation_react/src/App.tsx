@@ -6,6 +6,7 @@ import {COMMAND_ELEMENTS, COMMAND_ELEMENT,
         COMMAND_ELEMENT4, COMMAND_ELEMENT5, COMMAND_ELEMENT6} from "./type/command"
 // Command Input
 import Command1Input from "./component/CommandInput/Command1Input"
+import Command2Input from "./component/CommandInput/Command2Input"
 import Command4Input from "./component/CommandInput/Command4Input"
 import Command5Input from "./component/CommandInput/Command5Input"
 import Command6Input from "./component/CommandInput/Command6Input"
@@ -15,6 +16,7 @@ import IfCommand5Input from "./component/CommandInput/IfCommand5Input"
 import IfCommand6Input from "./component/CommandInput/IfCommand6Input"
 // Command Output
 import Command1Output from "./component/CommandOutput/Command1Output"
+import Command2Output from "./component/CommandOutput/Command2Output"
 import Command4Output from "./component/CommandOutput/Command4Output"
 import Command5Output from "./component/CommandOutput/Command5Output"
 import Command6Output from "./component/CommandOutput/Command6Output"
@@ -27,15 +29,18 @@ import Command7Output from "./component/CommandOutput/Command7Output"
  *  4 : 変数代入
  *  5 : クリック
  *  6 : 文字入力
+ *  7 : 結果チェック
+ *  101 : If終了
+ *  201 : While終了
  */
-type COMMANDS = 0 | 1 | 2 | 3 | 4 | 5 | 6
-type COMMANDS_IF_VERSION = 2 | 3 | 4 | 5 | 101
+export type COMMANDS = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 101 | 201
+type COMMANDS_IF_VERSION = 3 | 4 | 5 | 101
 type COMMANDS_WHILE_VERSION = 3 | 4 | 5 | 201
 const COMMANDS_STR = ["変数作成", "If文", "While文", "変数代入", "クリック", "文字入力", "結果チェック"]
-const COMMANDS_STR_IF_VERSION = ["While文", "変数代入", "クリック", "文字入力", "終了"]
-const COMMANDS_STR_WHILE_VERSION = ["変数代入", "クリック", "文字入力", "終了"]
-const COMMAND_STR_HASH = {0: "変数作成", 1: "If文", 2: "While文", 3: "変数代入", 4: "クリック", 5: "文字入力", 6 : "結果チェック", 101: "If終了", 202: "While終了"}
-const COMMAND_STR_INDEX_IF_VERSION = [2, 3, 4, 5, 101]
+export const COMMANDS_STR_IF_VERSION = ["変数代入", "クリック", "文字入力", "終了"]
+export const COMMANDS_STR_WHILE_VERSION = ["変数代入", "クリック", "文字入力", "終了"]
+export const COMMAND_STR_HASH = {0: "変数作成", 1: "If文", 2: "While文", 3: "変数代入", 4: "クリック", 5: "文字入力", 6 : "結果チェック", 101: "If終了", 201: "While終了"}
+export const COMMAND_STR_INDEX_IF_VERSION = [3, 4, 5, 101]
 type COMMAND_KEYS = "variable" | "xpath" | "xpath_index" | "content" | "is_variable" | "sign_type"
 const sign_type = ["=", "!="]
 
@@ -141,10 +146,8 @@ function App() {
     const newly_created_if_command_id = if_command_results.length 
     set_is_if_command_focused(newly_created_if_command_id)
     set_left_command_if_command_is_disabled(true)
-    let created_command: COMMAND_IF_ELEMENTS = {command_id: 2, commands: []}
-    if (current_left_command_if_command === 3) {
-      created_command = {command_id: 3, xpath: "", xpath_index: 0, variable: ""}
-    } else if (current_left_command_if_command === 4) {
+    let created_command: COMMAND_IF_ELEMENTS = {command_id: 3, xpath: "", xpath_index: 0, variable: ""}
+    if (current_left_command_if_command === 4) {
       created_command = {command_id: 4, xpath: "", xpath_index: 0}
     } else if (current_left_command_if_command === 5) {
       created_command = {command_id: 5, xpath: "", xpath_index: 0, is_variable: false, content: ""}
@@ -207,95 +210,102 @@ function App() {
                       />
                     }
                     {c_result.command_id === 1 &&
-                      <>
-                      <div className="app-left-command-detail-area-small" onClick={() => unFocusIfCommandElement(index)}>
-                        <h6 className="app-h6-without-margin">命令入力</h6>
-                        <select className="app-select" onChange={(e) => onChangeIfCommand(e)} value={current_left_command_if_command}>
-                          {COMMANDS_STR_IF_VERSION.map((c_str, i_c_index) => {
-                            return(
-                              <option value={COMMAND_STR_INDEX_IF_VERSION[i_c_index]} key={`command_${i_c_index}`}>{c_str}</option>
-                            )
-                          })}
-                        </select>
-                        <br/>
-                        <input type="button" className="app-button-primary" value="追加する" onClick={() => createCommandInputIfVersion(index)}/>
-                      </div>
-                      <div className="app-left-command-detail-area-small-down-arrow"></div>
-                      <>
-                        {if_command_results.map((if_command_result, i_index) => {
-                          return(
-                            <React.Fragment key={`if_command_${i_index}`}>
-                              { is_if_command_focused === i_index ?
-                              <div className="app-left-command-detail-area-small" onClick={(e) => {reFocusIfCommandElement(index, i_index); e.stopPropagation()}}>
-                                <h6 className="app-h6-without-margin">{COMMAND_STR_HASH[if_command_result.command_id]}</h6>
-                                <hr/>
-                                { if_command_result.command_id === 2 &&
-                                  <>while</>
-                                }
-                                { if_command_result.command_id === 3 &&
-                                  <IfCommand4Input
-                                    setCommandResultEachNormal={setIfCommandResultEachNormal}
-                                    command_results={command_results}
-                                    command_result={c_result}
-                                    index={index}
-                                    if_index={i_index}
-                                  />
-                                }
-                                { if_command_result.command_id === 4 &&
-                                  <IfCommand5Input
-                                    setCommandResultEachNormal={setIfCommandResultEachNormal}
-                                    command_results={command_results}
-                                    command_result={c_result}
-                                    index={index}
-                                    if_index={i_index}
-                                  />
-                                }
-                                { if_command_result.command_id === 5 &&
-                                  <IfCommand6Input
-                                    setCommandResultEachNormal={setIfCommandResultEachNormal}
-                                    command_results={command_results}
-                                    command_result={c_result}
-                                    index={index}
-                                    if_index={i_index}
-                                  />
-                                }
-                                { if_command_result.command_id === 101 &&
-                                  <div className="app-left-command-detail-area">
-                                    <small>If文終了</small>
-                                  </div>
-                                }
-                              </div>
-                              :
-                              <div className="app-left-command-detail-area-small" onClick={(e) => {reFocusIfCommandElement(index, i_index); e.stopPropagation()}}>
-                                <h6 className="app-h6-without-margin">{COMMAND_STR_HASH[if_command_result.command_id]}</h6>
-                                { if_command_result.command_id === 2 &&
-                                  <>while</>
-                                }
-                                { if_command_result.command_id === 3 &&
-                                  <Command4Output command_result={if_command_result}/>
-                                }
-                                { if_command_result.command_id === 4 &&
-                                  <Command5Output command_result={if_command_result}/>
-                                }
-                                { if_command_result.command_id === 5 &&
-                                  <Command6Output command_result={if_command_result}/>
-                                }
-                                { if_command_result.command_id === 101 &&
-                                  <>
-                                    <hr/>
-                                    <small>If文終了</small>
-                                  </>
-                                }
-                              </div>
-                              }
-                              { if_command_result.command_id !== 101 &&
-                                <div className="app-left-command-detail-area-small-down-arrow"></div>
-                              }
-                            </React.Fragment>
-                          )
-                        })}
-                      </>
-                      </>
+                      <Command2Input
+                        setCommandResultEachNormal={setIfCommandResultEachNormal}
+                        onChangeIfCommand={onChangeIfCommand}
+                        createCommandInputIfVersion={createCommandInputIfVersion}
+                        unFocusIfCommandElement={unFocusIfCommandElement}
+                        reFocusIfCommandElement={reFocusIfCommandElement}
+                        current_left_command_if_command={current_left_command_if_command}
+                        command_results={command_results}
+                        command_result={c_result}
+                        if_command_results={if_command_results}
+                        index={index}
+                        is_if_command_focused={is_if_command_focused}
+                      />
+                  //     <>
+                  //     <div className="app-left-command-detail-area-small" onClick={() => unFocusIfCommandElement(index)}>
+                  //       <h6 className="app-h6-without-margin">命令入力</h6>
+                  //       <select className="app-select" onChange={(e) => onChangeIfCommand(e)} value={current_left_command_if_command}>
+                  //         {COMMANDS_STR_IF_VERSION.map((c_str, i_c_index) => {
+                  //           return(
+                  //             <option value={COMMAND_STR_INDEX_IF_VERSION[i_c_index]} key={`command_${i_c_index}`}>{c_str}</option>
+                  //           )
+                  //         })}
+                  //       </select>
+                  //       <br/>
+                  //       <input type="button" className="app-button-primary" value="追加する" onClick={() => createCommandInputIfVersion(index)}/>
+                  //     </div>
+                  //     <div className="app-left-command-detail-area-small-down-arrow"></div>
+                  //     <>
+                  //       {if_command_results.map((if_command_result, i_index) => {
+                  //         return(
+                  //           <React.Fragment key={`if_command_${i_index}`}>
+                  //             { is_if_command_focused === i_index ?
+                  //             <div className="app-left-command-detail-area-small" onClick={(e) => {reFocusIfCommandElement(index, i_index); e.stopPropagation()}}>
+                  //               <h6 className="app-h6-without-margin">{COMMAND_STR_HASH[if_command_result.command_id]}</h6>
+                  //               <hr/>
+                  //               { if_command_result.command_id === 3 &&
+                  //                 <IfCommand4Input
+                  //                   setCommandResultEachNormal={setIfCommandResultEachNormal}
+                  //                   command_results={command_results}
+                  //                   command_result={c_result}
+                  //                   index={index}
+                  //                   if_index={i_index}
+                  //                 />
+                  //               }
+                  //               { if_command_result.command_id === 4 &&
+                  //                 <IfCommand5Input
+                  //                   setCommandResultEachNormal={setIfCommandResultEachNormal}
+                  //                   command_results={command_results}
+                  //                   command_result={c_result}
+                  //                   index={index}
+                  //                   if_index={i_index}
+                  //                 />
+                  //               }
+                  //               { if_command_result.command_id === 5 &&
+                  //                 <IfCommand6Input
+                  //                   setCommandResultEachNormal={setIfCommandResultEachNormal}
+                  //                   command_results={command_results}
+                  //                   command_result={c_result}
+                  //                   index={index}
+                  //                   if_index={i_index}
+                  //                 />
+                  //               }
+                  //               { if_command_result.command_id === 101 &&
+                  //                 <div className="app-left-command-detail-area">
+                  //                   <small>If文終了</small>
+                  //                 </div>
+                  //               }
+                  //             </div>
+                  //             :
+                  //             <div className="app-left-command-detail-area-small" onClick={(e) => {reFocusIfCommandElement(index, i_index); e.stopPropagation()}}>
+                  //               <h6 className="app-h6-without-margin">{COMMAND_STR_HASH[if_command_result.command_id]}</h6>
+                  //               { if_command_result.command_id === 3 &&
+                  //                 <Command4Output command_result={if_command_result}/>
+                  //               }
+                  //               { if_command_result.command_id === 4 &&
+                  //                 <Command5Output command_result={if_command_result}/>
+                  //               }
+                  //               { if_command_result.command_id === 5 &&
+                  //                 <Command6Output command_result={if_command_result}/>
+                  //               }
+                  //               { if_command_result.command_id === 101 &&
+                  //                 <>
+                  //                   <hr/>
+                  //                   <small>If文終了</small>
+                  //                 </>
+                  //               }
+                  //             </div>
+                  //             }
+                  //             { if_command_result.command_id !== 101 &&
+                  //               <div className="app-left-command-detail-area-small-down-arrow"></div>
+                  //             }
+                  //           </React.Fragment>
+                  //         )
+                  //       })}
+                  //     </>
+                  //     </>
                     }
                     {c_result.command_id === 2 &&
                       <div className="app-left-command-detail-area-small">
@@ -354,34 +364,7 @@ function App() {
                     }
                     { (c_result.command_id === 1 ) &&
                       <>
-                        { (c_result.commands.some((c_r) => c_r.command_id === 101) === true) ?
-                          c_result.commands.every((c_r) => {
-                            if (c_r.command_id === 2) {
-                              return true
-                            } else if (c_r.command_id === 3) {
-                              return c_r.xpath !== undefined && c_r.xpath_index !== undefined && c_r.variable !== undefined && c_r.xpath!.length !== 0 && c_r.variable!.length !== 0
-                            } else if (c_r.command_id === 4) {
-                              return c_r.xpath !== undefined && c_r.xpath_index !== undefined && c_r.xpath!.length !== 0
-                            } else if (c_r.command_id === 5) {
-                              return c_r.xpath !== undefined && c_r.xpath_index !== undefined && c_r.is_variable !== undefined && c_r.content !== undefined && c_r.xpath!.length !== 0 && c_r.content!.length !== 0
-                            } else if (c_r.command_id === 101) {
-                              return true
-                            }
-                          }) === true ?
-                          <div>
-                            <hr/>
-                            <small>
-                              {c_result.commands.length > 0 ? COMMAND_STR_HASH[c_result.commands[0].command_id] + "...[続きを見る]" : "内容がありません"}
-                            </small>
-                          </div>
-                          :
-                          <div>
-                            <hr/>
-                            <small>編集中の内容があります。</small>
-                          </div>
-                          :
-                          <div><hr/><small>If文を終了して下さい。</small></div>
-                        }
+                        <Command2Output command_result={c_result}/>
                       </>
                     }
                     { (c_result.command_id === 2 ) &&

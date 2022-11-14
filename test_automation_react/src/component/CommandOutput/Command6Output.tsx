@@ -4,7 +4,7 @@ type Props = {
 	command_result: COMMAND_ELEMENT
 }
 
-const Command5Output = (props: Props) => {
+const Command6Output = (props: Props) => {
 	const command_result = props.command_result
 
 	return(
@@ -24,4 +24,4 @@ const Command5Output = (props: Props) => {
 	)
 }
 
-export default Command5Output
+export default Command6Output
