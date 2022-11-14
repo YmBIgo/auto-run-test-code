@@ -274,7 +274,7 @@ function App() {
             <React.Fragment key={`command_element_${index}`}>
               <div
                 className={ is_left_ui_focused === index ? "app-left-command-element focused-app-left-command-element" : "app-left-command-element"}
-                onClick={(e) => {reFocusLeftCommandElement(index); unFocusIfCommandElement(index);e.stopPropagation()}}
+                onClick={(e) => {reFocusLeftCommandElement(index); unFocusIfCommandElement(index);unFocusWhileCommandElement(index);e.stopPropagation()}}
               >
                 { is_left_ui_focused === index ?
                   <>
@@ -322,7 +322,7 @@ function App() {
                           <br/>
                           <input type="number" className="app-text-input" value={c_result.condition1} onChange={(e) => setCommandResultEachNormal(e, "condition1", index)} />
                         </div>
-                        <div className="app-left-command-detail-area-small" onClick={() => unFocusIfCommandElement(index)}>
+                        <div className="app-left-command-detail-area-small" onClick={() => unFocusWhileCommandElement(index)}>
                           <h6 className="app-h6-without-margin">命令入力</h6>
                           <select className="app-select" onChange={(e) => onChangeIfCommand(e)} value={current_left_command_if_command}>
                             {COMMANDS_STR_WHILE_VERSION.map((c_str: string, i_c_index: number) => {
