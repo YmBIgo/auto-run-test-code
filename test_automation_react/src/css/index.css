@@ -22,13 +22,32 @@
 	border-color:#dc3545;
 	color:white;
 }
+.app-button-success {
+	width:100px;
+	height:30px;
+	margin:10px 0;
+	border-radius:5px;
+	background-color:#198754;
+	border-color:#198754;
+	color:white;
+}
 .app-button-primary:disabled {
 	background-color: rgba(0, 100, 255, .4);
 	border-color:rgba(0, 100, 255, .2);
 }
+.app-button-success:disabled {
+	background-color:rgba(100, 255, 0, .6);
+	border-color:rgba(0, 255, 100, .2);
+}
 .app-text-input {
 	width:200px;
 	height:30px;
+	border:1px solid rgba(50, 100, 250, .6);
+	border-radius:5px;
+}
+.app-textarea {
+	width:400px;
+	height:150px;
 	border:1px solid rgba(50, 100, 250, .6);
 	border-radius:5px;
 }
@@ -107,7 +126,12 @@
 	margin-left:1%;
 	margin-right:4%;
 	padding:10px;
-	height:300px;
+	height:500px;
 }
-
+.app-json {
+	width:400px;
+	height:150px;
+	overflow:scroll;
+	border:1px solid rgba(0, 50, 200, .4);
+}
 

@@ -1,5 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react'
+import axios from "axios"
 import "./css/index.css"
+import {COMMANDS, COMMANDS_IF_VERSION,
+        COMMANDS_STR, COMMANDS_STR_IF_VERSION, COMMANDS_STR_WHILE_VERSION,
+        COMMAND_STR_HASH, COMMAND_STR_INDEX_IF_VERSION, COMMAND_STR_INDEX_WHILE_VERSION,
+        COMMAND_KEYS, sign_type} from "./constants/commands"
 import {COMMAND_ELEMENTS, COMMAND_ELEMENT,
         COMMAND_IF_ELEMENTS, COMMAND_WHILE_ELEMENTS,
         COMMAND_ELEMENT1, COMMAND_ELEMENT2, COMMAND_ELEMENT3,
@@ -22,29 +27,6 @@ import Command4Output from "./component/CommandOutput/Command4Output"
 import Command5Output from "./component/CommandOutput/Command5Output"
 import Command6Output from "./component/CommandOutput/Command6Output"
 import Command7Output from "./component/CommandOutput/Command7Output"
-
-/* コマンドの一覧
- *  1 : 変数作成
- *  2 : If 文
- *  3 : While 文
- *  4 : 変数代入
- *  5 : クリック
- *  6 : 文字入力
- *  7 : 結果チェック
- *  101 : If終了
- *  201 : While終了
- */
-export type COMMANDS = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 101 | 201
-type COMMANDS_IF_VERSION = 3 | 4 | 5 | 101
-type COMMANDS_WHILE_VERSION = 3 | 4 | 5 | 201
-const COMMANDS_STR = ["変数作成", "If文", "While文", "変数代入", "クリック", "文字入力", "結果チェック"]
-export const COMMANDS_STR_IF_VERSION = ["変数代入", "クリック", "文字入力", "終了"]
-export const COMMANDS_STR_WHILE_VERSION = ["変数代入", "クリック", "文字入力", "終了"]
-export const COMMAND_STR_HASH = {0: "変数作成", 1: "If文", 2: "While文", 3: "変数代入", 4: "クリック", 5: "文字入力", 6 : "結果チェック", 101: "If終了", 201: "While終了"}
-export const COMMAND_STR_INDEX_IF_VERSION = [3, 4, 5, 101]
-export const COMMAND_STR_INDEX_WHILE_VERSION = [3, 4, 5, 201]
-type COMMAND_KEYS = "variable" | "xpath" | "xpath_index" | "content" | "is_variable" | "sign_type" | "condition1" | "condition2" | "condition_sign"
-export const sign_type = ["=", "!="]
 
 function App() {
 
@@ -505,7 +487,13 @@ function App() {
           })}
         </select>
         <br/>
-        <input type="button" disabled = {right_command_input_is_disabled} className="app-button-primary" value="コマンドを作る" onClick={() => createCommandInput()} />
+        <input type="button" disabled={right_command_input_is_disabled} className="app-button-primary" value="コマンドを作る" onClick={() => createCommandInput()} />
+        <br/>
+        <div className="app-json">
+          {JSON.stringify(command_results)}
+        </div>
+        <br/>
+        <input type="button" disabled={right_command_input_is_disabled} className="app-button-success" value="結果を送信する" />
       </div>
     </div>
   );

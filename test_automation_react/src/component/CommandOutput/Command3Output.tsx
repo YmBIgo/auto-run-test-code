@@ -1,5 +1,5 @@
 import {COMMAND_ELEMENTS, COMMAND_ELEMENT3, COMMAND_ELEMENT} from "../../type/command"
-import {COMMAND_STR_HASH} from "../../App"
+import {COMMAND_STR_HASH} from "../../constants/commands"
 
 type Props = {
 	command_result: COMMAND_ELEMENT3

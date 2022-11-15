@@ -2,7 +2,7 @@ import React, {useEffect} from "react"
 import {COMMAND_ELEMENTS, COMMAND_ELEMENT} from "../../type/command"
 import {COMMANDS, COMMANDS_STR_IF_VERSION,
 		COMMAND_STR_INDEX_IF_VERSION, COMMAND_STR_HASH,
-		sign_type} from "../../App"
+		sign_type} from "../../constants/commands"
 import IfCommand4Input from "../../component/CommandInput/IfCommand4Input"
 import IfCommand5Input from "../../component/CommandInput/IfCommand5Input"
 import IfCommand6Input from "../../component/CommandInput/IfCommand6Input"
