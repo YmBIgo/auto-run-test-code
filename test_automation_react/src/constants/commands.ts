@@ -19,4 +19,4 @@ export const COMMAND_STR_HASH = {0: "変数作成", 1: "If文", 2: "While文", 3
 export const COMMAND_STR_INDEX_IF_VERSION = [3, 4, 5, 101]
 export const COMMAND_STR_INDEX_WHILE_VERSION = [3, 4, 5, 201]
 export type COMMAND_KEYS = "variable" | "xpath" | "xpath_index" | "content" | "is_variable" | "sign_type" | "condition1" | "condition2" | "condition_sign"
-export const sign_type = ["==", "!="]
+export const sign_type = ["==", "!=", "in"]

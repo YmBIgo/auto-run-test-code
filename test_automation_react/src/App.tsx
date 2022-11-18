@@ -28,6 +28,12 @@ import Command5Output from "./component/CommandOutput/Command5Output"
 import Command6Output from "./component/CommandOutput/Command6Output"
 import Command7Output from "./component/CommandOutput/Command7Output"
 
+type AWS_RESULT_TYPE = {
+  file_name: string;
+  result: string;
+  variables: string[];
+}
+
 function App() {
 
   // right web ui
@@ -35,6 +41,13 @@ function App() {
   const [current_right_command, set_current_right_command] = useState<number>(0) 
   const [right_command_input_is_disabled, set_right_command_input_is_disabled] = useState<boolean>(true)
   const [current_url, set_current_url] = useState<string>("")
+  const [input_json_command, set_input_json_command] = useState<File | null>(null)
+  const [test_result, set_test_result] = useState<string>("テストを実行して下さい")
+  const [test_result_image, set_test_result_image] = useState<string>("")
+  const [test_result_variables, set_test_result_variables] = useState<string[]>([])
+  const [test_is_loading, set_test_is_loading] = useState<boolean>(false)
+  // left title
+  const [is_left_title_json, set_is_left_title_json] = useState<boolean>(false)
   // left web ui
   const [is_left_ui_focused, set_is_left_ui_focused] = useState<number | null>(null)
   const [current_left_command_if_command, set_current_left_command_if_command] = useState<number>(0)
@@ -53,6 +66,47 @@ function App() {
     set_current_right_command(Number(e.target.value))
   }
 
+  // json
+  const onChangeCommandJSON = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (files === null) return
+    const file = files[0]
+    console.log(file)
+    set_input_json_command(file)
+  }
+  const loadCommandJSON = () => {
+    if (input_json_command === null) return
+    const reader = new FileReader();
+    let json_result: {commands: COMMAND_ELEMENTS, url: string} = {commands: [], url: ""}
+    reader.onload = () => {
+      try{
+        const reader_result = reader.result as string
+        if (reader_result === null) return
+        json_result = JSON.parse(reader_result) // should fix ArrayBuffer
+      } catch (e) {
+        json_result = {commands: [], url: ""}
+      } finally {
+        set_command_results(json_result.commands)
+        set_current_url(json_result.url)
+      }
+    }
+    reader.readAsText(input_json_command)
+  }
+  const downloadCommandJSON = () => {
+    const random_str = (Math.random() * 1000000).toString(16).replace(/\./, "")
+    const fileName = `test_automation_${random_str}.json`
+    const download_content: {commands: COMMAND_ELEMENTS, url: string} = {commands: command_results, url: current_url}
+    const data = new Blob([JSON.stringify(download_content)], {type: 'text/json'})
+    const jsonURL = window.URL.createObjectURL(data)
+    const link = document.createElement('a')
+    document.body.appendChild(link)
+    link.href = jsonURL
+    link.setAttribute('download', fileName)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  // create commands other than if and while
   const createCommandInput = () => {
     const command6_filtered_command_result = command_results.filter((c_r) => c_r.command_id === 6)
     if (command6_filtered_command_result.length === 1 && current_right_command === 6) {
@@ -80,10 +134,9 @@ function App() {
   }
   const deleteCommandResult = (index: number) => {
     unFocusLeftCommandElement()
-    set_command_results((prev_command_results) => {
-      prev_command_results.splice(index, 1)
-      return [...prev_command_results]
-    })
+    let deleted_command_results = command_results.slice()
+    deleted_command_results.splice(index, 1)
+    set_command_results([...deleted_command_results])
   }
 
   const reFocusLeftCommandElement = (index: number) => {
@@ -242,11 +295,40 @@ function App() {
     set_is_while_command_focused(null)
   }
 
+  // submit
+  const submitCommand = () => {
+    const aws_url = "https://s270q3vddg.execute-api.us-west-1.amazonaws.com/default/runAutoCreatedTestCode?url=" + current_url + "&code_json_str=" + JSON.stringify(command_results)
+    console.log(aws_url)
+    axios.get(aws_url ).then((result) => {
+      console.log(result.data)
+      const aws_result = result.data as AWS_RESULT_TYPE // should fix
+      set_test_result(aws_result.result)
+      set_test_result_image(aws_result.file_name)
+      set_test_result_variables(aws_result.variables)
+    })
+  }
+
+// https://s270q3vddg.execute-api.us-west-1.amazonaws.com/default/runAutoCreatedTestCode
+// url="https://www.yahoo.co.jp"&code_json_str='[{"command_id":5,"xpath":"//*[@id=\"ContentWrapper\"]/header/section[1]/div/form/fieldset/span/input","xpath_index":1,"is_variable":false,"content":"test"},{"command_id":4,"xpath":"//*[@id=\"ContentWrapper\"]/header/section[1]/div/form/fieldset/span/button","xpath_index":1}]'
+
   return (
     <div className="App">
       <div className="app-left" onClick={() => {unFocusLeftCommandElement();}}>
-        <div className="app-left-command-element">
+        <div className="app-left-command-title">
           {current_url ? `${current_url}を自動化` : "自動化するURLを右から入力して下さい。" }
+          { is_left_title_json &&
+            <>
+              <hr/>
+              <p style={{margin: "3px 0"}}>JSON結果：</p>
+              <div className="app-json">
+                {JSON.stringify(command_results)}
+              </div>
+            </>
+          }
+        </div>
+        <div className="app-left-command-download-button">
+          <input type="button" className="app-button-primary" value="JSONをダウンロード" style={{width: "120px"}} onClick={() => downloadCommandJSON()} />
+          <input type="button" className="app-button-success" value={is_left_title_json ? "JSONを非表示" : "JSONを表示"} style={{marginLeft: "20px"}} onClick={() => set_is_left_title_json((prev_is_left_title_json) => !prev_is_left_title_json)}/>
         </div>
         {command_results.length === 0 ?
           <div><h3>自動化が設定されていません。</h3></div>
@@ -476,8 +558,8 @@ function App() {
       </div>
       <div className="app-right">
         <h4 className="app-h4-without-margin">サイトURLを入力して下さい。</h4>
-        <br/>
         <input className="app-text-input" style={{width: "300px"}} type="text" value={current_url} onChange={(e) => {set_current_url(e.target.value); set_right_command_input_is_disabled(false)}}/>
+        <hr/>
         <h4 className="app-h4-without-margin">{current_right_message}</h4>
         <select className="app-select" disabled = {right_command_input_is_disabled} value={current_right_command} onChange={(e) => onChangeRightCommand(e)} >
           {COMMANDS_STR.map((c_str, index) => {
@@ -488,12 +570,35 @@ function App() {
         </select>
         <br/>
         <input type="button" disabled={right_command_input_is_disabled} className="app-button-primary" value="コマンドを作る" onClick={() => createCommandInput()} />
+        <hr/>
+        <h4 className="app-h4-without-margin">JSONから入力することもできます。</h4>
+        <input type="file" accept="application/JSON" onChange={(e) => onChangeCommandJSON(e)} />
+        <input type="button" className="app-button-primary" value="JSON を読み込む" onClick={() => loadCommandJSON()} />
+        {/* 
         <br/>
         <div className="app-json">
           {JSON.stringify(command_results)}
         </div>
+        */}
+        <hr/>
+        <input type="button" disabled={right_command_input_is_disabled} className="app-button-success" value="結果を送信する" onClick={() => submitCommand()} />
         <br/>
-        <input type="button" disabled={right_command_input_is_disabled} className="app-button-success" value="結果を送信する" />
+        <p>
+          {test_result}
+          {test_result == "False" && <> : 検証は失敗しました</>}
+          {test_result == "True" && <> : 検証は成功しました</>}
+        </p>
+        { test_result_image !== "" ?
+          <a href={test_result_image} target="_blank">
+            <img src={test_result_image} className="app-file-image"/>
+          </a>
+          :
+          <div className="app-file-image-text">
+            <div style={{padding: "10px"}}>
+              テスト結果のスクリーンショットが、ここに表示されます。
+            </div>
+          </div>
+        }
       </div>
     </div>
   );

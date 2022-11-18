@@ -1,1 +1,6 @@
 chromedriver
+ipaexm-ec2.pem
+.DS_Store
+package_files
+json
+
