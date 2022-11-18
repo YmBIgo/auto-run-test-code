@@ -73,7 +73,7 @@
 	margin-right:1%;
 	margin-left:4%;
 	padding:10px;
-	height:700px;
+	height:auto;
 	overflow:scroll;
 	background-color:rgba(100, 100, 100, .1);
 }
@@ -141,7 +141,7 @@
 	margin-left:1%;
 	margin-right:4%;
 	padding:10px;
-	height:700px;
+	height:auto;
 }
 .app-json {
 	width:90%;

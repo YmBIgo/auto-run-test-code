@@ -31,7 +31,7 @@ import Command7Output from "./component/CommandOutput/Command7Output"
 type AWS_RESULT_TYPE = {
   file_name: string;
   result: string;
-  variables: string[];
+  variables: {[key: string]:string};
 }
 
 function App() {
@@ -44,8 +44,8 @@ function App() {
   const [input_json_command, set_input_json_command] = useState<File | null>(null)
   const [test_result, set_test_result] = useState<string>("テストを実行して下さい")
   const [test_result_image, set_test_result_image] = useState<string>("")
-  const [test_result_variables, set_test_result_variables] = useState<string[]>([])
-  const [test_is_loading, set_test_is_loading] = useState<boolean>(false)
+  const [test_result_variables, set_test_result_variables] = useState<{[key: string]: string}>({} as {[key: string]: string})
+  const [test_is_loading, set_test_is_loading] = useState<boolean | null>(null)
   // left title
   const [is_left_title_json, set_is_left_title_json] = useState<boolean>(false)
   // left web ui
@@ -91,6 +91,7 @@ function App() {
       }
     }
     reader.readAsText(input_json_command)
+    unFocusLeftCommandElement()
   }
   const downloadCommandJSON = () => {
     const random_str = (Math.random() * 1000000).toString(16).replace(/\./, "")
@@ -299,12 +300,16 @@ function App() {
   const submitCommand = () => {
     const aws_url = "https://s270q3vddg.execute-api.us-west-1.amazonaws.com/default/runAutoCreatedTestCode?url=" + current_url + "&code_json_str=" + JSON.stringify(command_results)
     console.log(aws_url)
+    set_test_is_loading(false)
+    set_test_result("テスト実施中...")
     axios.get(aws_url ).then((result) => {
       console.log(result.data)
       const aws_result = result.data as AWS_RESULT_TYPE // should fix
       set_test_result(aws_result.result)
       set_test_result_image(aws_result.file_name)
+      console.log(aws_result.variables)
       set_test_result_variables(aws_result.variables)
+      set_test_is_loading(true)
     })
   }
 
@@ -312,7 +317,22 @@ function App() {
 // url="https://www.yahoo.co.jp"&code_json_str='[{"command_id":5,"xpath":"//*[@id=\"ContentWrapper\"]/header/section[1]/div/form/fieldset/span/input","xpath_index":1,"is_variable":false,"content":"test"},{"command_id":4,"xpath":"//*[@id=\"ContentWrapper\"]/header/section[1]/div/form/fieldset/span/button","xpath_index":1}]'
 
   return (
-    <div className="App">
+    <div className="">
+      <h1>テスト自動化ツール</h1>
+      <hr/>
+      <h4 className="app-h4-without-margin">使い方</h4>
+      <ol>
+        <li>右側のパネルで、URLを入力します (JSONをロードする場合は、2は飛ばしても大丈夫です)。</li>
+        <li>左側のパネルで、自動化したい動作を入力します。
+          <ul>
+            <li>変数や <a href="http://www.ic.daito.ac.jp/~mizutani/python/intro8_python.html">pythonの予約語</a> は数字以外を入力して下さい。</li>
+            <li>Xpath は ディベロッパーツールを使えばコピー出来ます。</li>
+            <li>一度だけ、結果チェックという内容の検証を行うことができます。</li>
+          </ul>
+        </li>
+        <li>動作を入力したら、右側のパネルの「結果を送信する」の緑のボタンを押します。１分ほどすれば結果が表示されます。</li>
+      </ol>
+      <div className="App">
       <div className="app-left" onClick={() => {unFocusLeftCommandElement();}}>
         <div className="app-left-command-title">
           {current_url ? `${current_url}を自動化` : "自動化するURLを右から入力して下さい。" }
@@ -329,6 +349,7 @@ function App() {
         <div className="app-left-command-download-button">
           <input type="button" className="app-button-primary" value="JSONをダウンロード" style={{width: "120px"}} onClick={() => downloadCommandJSON()} />
           <input type="button" className="app-button-success" value={is_left_title_json ? "JSONを非表示" : "JSONを表示"} style={{marginLeft: "20px"}} onClick={() => set_is_left_title_json((prev_is_left_title_json) => !prev_is_left_title_json)}/>
+          <input type="button" className="app-button-danger" value="リセット" style={{marginLeft: "20px"}} onClick={() => set_command_results([])} />
         </div>
         {command_results.length === 0 ?
           <div><h3>自動化が設定されていません。</h3></div>
@@ -588,17 +609,55 @@ function App() {
           {test_result == "False" && <> : 検証は失敗しました</>}
           {test_result == "True" && <> : 検証は成功しました</>}
         </p>
-        { test_result_image !== "" ?
-          <a href={test_result_image} target="_blank">
-            <img src={test_result_image} className="app-file-image"/>
-          </a>
+        { test_is_loading ?
+          <>
+            { test_result_image !== "" ?
+              <>
+                <a href={test_result_image} target="_blank">
+                  <img src={test_result_image} className="app-file-image"/>
+                </a>
+                {Object.keys(test_result_variables).length !== 0 ?
+                  <>
+                    <p>変数一覧</p>
+                    <ul>
+                      {Object.keys(test_result_variables).map((test_r_v, index) => {
+                        return (
+                          <li key={`test_variable_${index}`}>
+                            {test_r_v} {" = "} {test_result_variables[test_r_v]}
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  </>
+                  :
+                  <></>
+                }
+              </>
+              :
+              <div className="app-file-image-text">
+                <div style={{padding: "10px"}}>
+                  テスト結果のスクリーンショットが、ここに表示されます。
+                </div>
+              </div>
+            }
+          </>
           :
-          <div className="app-file-image-text">
-            <div style={{padding: "10px"}}>
-              テスト結果のスクリーンショットが、ここに表示されます。
-            </div>
-          </div>
+          <>
+            {test_is_loading === null &&
+              <div className="app-file-image-text">
+                <div style={{padding: "10px"}}>
+                  テスト結果のスクリーンショットが、ここに表示されます。
+                </div>
+              </div>
+            }
+            {test_is_loading === false &&
+              <p>
+                1分ほどお待ちください。
+              </p>
+            }
+          </>
         }
+      </div>
       </div>
     </div>
   );
