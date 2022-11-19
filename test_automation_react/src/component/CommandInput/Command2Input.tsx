@@ -47,6 +47,17 @@ const Command2Input = (props: Props) => {
 
 	return(
 		<>
+		<label><small>コメント</small></label>
+		<br/>
+		<input
+			type="text"
+			className="app-text-input"
+			style={{width: "90%"}}
+			onChange={(e) => setCommandResultEachNormal(e, "description", index)}
+			value={(command_result.description !== undefined) ? command_result.description : ""}
+			placeholder="コメントを入力して下さい(任意)"
+		/>
+		<br/><br/>
 		<div className="app-left-command-detail-area-small" onClick={() => {unFocusIfCommandElement(index); reFocusIfCommandBlock(index)}}>
 		  <h6 className="app-h6-without-margin">条件入力</h6>
 		  <hr/>
@@ -133,7 +144,7 @@ const Command2Input = (props: Props) => {
 		        </div>
 		        :
 		        <div className="app-left-command-detail-area-small" onClick={(e) => {reFocusIfCommandElement(index, i_index); e.stopPropagation()}}>
-		          <h6 className="app-h6-without-margin">{COMMAND_STR_HASH[if_command_result.command_id]}</h6>
+		          <h6 className="app-h6-without-margin">{COMMAND_STR_HASH[if_command_result.command_id]} / {if_command_result.description}</h6>
 		          { if_command_result.command_id === 3 &&
 		            <Command4Output command_result={if_command_result}/>
 		          }

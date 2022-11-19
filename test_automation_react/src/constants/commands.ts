@@ -18,5 +18,5 @@ export const COMMANDS_STR_WHILE_VERSION = ["変数代入", "クリック", "文�
 export const COMMAND_STR_HASH = {0: "変数作成", 1: "If文", 2: "While文", 3: "変数代入", 4: "クリック", 5: "文字入力", 6 : "結果チェック", 101: "If終了", 201: "While終了"}
 export const COMMAND_STR_INDEX_IF_VERSION = [3, 4, 5, 101]
 export const COMMAND_STR_INDEX_WHILE_VERSION = [3, 4, 5, 201]
-export type COMMAND_KEYS = "variable" | "xpath" | "xpath_index" | "content" | "is_variable" | "sign_type" | "condition1" | "condition2" | "condition_sign"
+export type COMMAND_KEYS = "variable" | "xpath" | "xpath_index" | "content" | "is_variable" | "sign_type" | "condition1" | "condition2" | "condition_sign" | "description"
 export const sign_type = ["==", "!=", "in"]

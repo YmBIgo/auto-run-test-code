@@ -19,6 +19,19 @@ const Command5Input = (props: Props) => {
 
 	return(
 		<div className="app-left-command-detail-area">
+			<label><small>コメント</small></label>
+			<br/>
+			<input
+				type="text"
+				className="app-text-input"
+				style={{width: "90%"}}
+				onChange={(e) => setCommandResultEachNormal(e, "description", index, if_index)}
+				value={(command_result.commands && command_result.commands[if_index]
+						&& command_result.commands[if_index].description !== undefined)
+						? command_result.commands[if_index].description : ""}
+				placeholder="コメントを入力して下さい(任意)"
+			/>
+			<br/>
 			<label><small>Xpath名</small></label>
 			<br/>
 			<input

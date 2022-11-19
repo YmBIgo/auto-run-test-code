@@ -117,19 +117,19 @@ function App() {
     const newly_created_command_id: number = command_results.length
     set_is_left_ui_focused(newly_created_command_id)
     set_right_command_input_is_disabled(true)
-    let created_command: COMMAND_ELEMENT = {command_id: 0, variable: ""};
+    let created_command: COMMAND_ELEMENT = {command_id: 0, variable: "", description: ""};
     if (current_right_command === 1) {
-      created_command = {command_id: 1, commands: [], condition1: "", condition2: "", condition_sign: ""}
+      created_command = {command_id: 1, commands: [], condition1: "", condition2: "", condition_sign: "", description: ""}
     } else if (current_right_command === 2) {
-      created_command = {command_id: 2, commands: [], condition1: ""}
+      created_command = {command_id: 2, commands: [], condition1: "", description: ""}
     } else if (current_right_command === 3) {
-      created_command = {command_id: 3, xpath: "", xpath_index: 0, variable: ""}
+      created_command = {command_id: 3, xpath: "", xpath_index: 0, variable: "", description: ""}
     } else if (current_right_command === 4) {
-      created_command = {command_id: 4, xpath: "", xpath_index: 0}
+      created_command = {command_id: 4, xpath: "", xpath_index: 0, description: ""}
     } else if (current_right_command === 5) {
-      created_command = {command_id: 5, xpath: "", xpath_index: 0, is_variable: false, content: ""}
+      created_command = {command_id: 5, xpath: "", xpath_index: 0, is_variable: false, content: "", description: ""}
     } else if (current_right_command === 6) {
-      created_command = {command_id: 6, variable: "", content: "", sign_type: ""}
+      created_command = {command_id: 6, variable: "", content: "", sign_type: "", description: ""}
     }
     set_command_results([...command_results, created_command])
   }
@@ -203,21 +203,21 @@ function App() {
     const newly_created_if_command_id = if_command_results.length 
     set_is_if_command_focused(newly_created_if_command_id)
     set_left_command_if_command_is_disabled(true)
-    let created_command: COMMAND_IF_ELEMENTS = {command_id: 3, xpath: "", xpath_index: 0, variable: ""}
+    let created_command: COMMAND_IF_ELEMENTS = {command_id: 3, xpath: "", xpath_index: 0, variable: "", description: ""}
     if (current_left_command_if_command === 4) {
-      created_command = {command_id: 4, xpath: "", xpath_index: 0}
+      created_command = {command_id: 4, xpath: "", xpath_index: 0, description: ""}
     } else if (current_left_command_if_command === 5) {
-      created_command = {command_id: 5, xpath: "", xpath_index: 0, is_variable: false, content: ""}
+      created_command = {command_id: 5, xpath: "", xpath_index: 0, is_variable: false, content: "", description: ""}
     } else if (current_left_command_if_command === 101) {
       created_command = {command_id: 101}
     }
     set_if_command_results([...if_command_results, created_command])
     set_command_results((prev_command_results: COMMAND_ELEMENTS) => {
-      const newly_insert_command_result: COMMAND_ELEMENT2 = {command_id: 1, commands: [...if_command_results, created_command], condition1: prev_command_results[index].condition1!, condition2: prev_command_results[index].condition2!, condition_sign: prev_command_results[index].condition_sign!}
+      const newly_insert_command_result: COMMAND_ELEMENT2 = {command_id: 1, commands: [...if_command_results, created_command], condition1: prev_command_results[index].condition1!, condition2: prev_command_results[index].condition2!, condition_sign: prev_command_results[index].condition_sign!, description: prev_command_results[index].description!}
       if (prev_command_results[index].condition1 !== undefined && prev_command_results[index].condition2 !== undefined && prev_command_results[index].condition_sign !== undefined ) {
         prev_command_results.splice(index, 1, newly_insert_command_result)
       } else {
-        prev_command_results.splice(index, 1, {command_id: 1, commands: [...if_command_results, created_command], condition1: "", condition2: "", condition_sign: ""})
+        prev_command_results.splice(index, 1, {command_id: 1, commands: [...if_command_results, created_command], condition1: "", condition2: "", condition_sign: "", description: ""})
       }
       return [...prev_command_results]
     })
@@ -261,21 +261,21 @@ function App() {
     const newly_created_while_command_id = while_command_results.length 
     set_is_while_command_focused(newly_created_while_command_id)
     set_left_command_while_command_is_disabled(true)
-    let created_command: COMMAND_WHILE_ELEMENTS = {command_id: 3, xpath: "", xpath_index: 0, variable: ""}
+    let created_command: COMMAND_WHILE_ELEMENTS = {command_id: 3, xpath: "", xpath_index: 0, variable: "", description: ""}
     if (current_left_command_if_command === 4) {
-      created_command = {command_id: 4, xpath: "", xpath_index: 0}
+      created_command = {command_id: 4, xpath: "", xpath_index: 0, description: ""}
     } else if (current_left_command_if_command === 5) {
-      created_command = {command_id: 5, xpath: "", xpath_index: 0, is_variable: false, content: ""}
+      created_command = {command_id: 5, xpath: "", xpath_index: 0, is_variable: false, content: "", description: ""}
     } else if (current_left_command_if_command === 201) {
       created_command = {command_id: 201}
     }
     set_while_command_results([...while_command_results, created_command])
     set_command_results((prev_command_results: COMMAND_ELEMENTS) => {
-      const newly_insert_command_result: COMMAND_ELEMENT3 = {command_id: 2, commands: [...while_command_results, created_command], condition1: prev_command_results[index].condition1!}
+      const newly_insert_command_result: COMMAND_ELEMENT3 = {command_id: 2, commands: [...while_command_results, created_command], condition1: prev_command_results[index].condition1!, description: prev_command_results[index].description!}
       if (prev_command_results[index].condition1 !== undefined ) {
         prev_command_results.splice(index, 1, newly_insert_command_result)
       } else {
-        prev_command_results.splice(index, 1, {command_id: 2, commands: [...while_command_results, created_command], condition1: ""})
+        prev_command_results.splice(index, 1, {command_id: 2, commands: [...while_command_results, created_command], condition1: "", description: ""})
       }
       return [...prev_command_results]
     })
@@ -310,6 +310,10 @@ function App() {
       console.log(aws_result.variables)
       set_test_result_variables(aws_result.variables)
       set_test_is_loading(true)
+    })
+    .catch (error => {
+      set_test_is_loading(null)
+      set_test_result("テスト失敗")
     })
   }
 
@@ -401,6 +405,18 @@ function App() {
                     }
                     {c_result.command_id === 2 &&
                       <>
+                        <label><small>コメント</small></label>
+                        <br/>
+                        <input
+                          type="text"
+                          className="app-text-input"
+                          style={{width: "90%"}}
+                          onChange={(e) => setCommandResultEachNormal(e, "description", index)}
+                          value={(c_result.description) ? c_result.description : ""}
+                          placeholder="コメントを入力して下さい(任意)"
+                        />
+                        <br/>
+                        <br/>
                         <div className="app-left-command-detail-area-small" onClick={() => {unFocusWhileCommandElement(index); reFocusWhileCommandBlock(index)}}>
                           <h6 className="app-h6-without-margin">条件入力</h6>
                           <hr/>
@@ -464,7 +480,7 @@ function App() {
                                     </div>
                                   :
                                     <div className="app-left-command-detail-area-small" onClick={(e) => {reFocusWhileCommandElement(index, w_c_index); e.stopPropagation()}}>
-                                      <h6 className="app-h6-without-margin">{COMMAND_STR_HASH[while_command_result.command_id]}</h6>
+                                      <h6 className="app-h6-without-margin">{COMMAND_STR_HASH[while_command_result.command_id]} / {while_command_result.description}</h6>
                                       { while_command_result.command_id === 3 &&
                                         <Command4Output command_result={while_command_result}/>
                                       }
@@ -481,6 +497,9 @@ function App() {
                                         </>
                                       }
                                     </div>
+                                  }
+                                  { while_command_result.command_id !== 201 &&
+                                    <div className="app-left-command-detail-area-small-down-arrow"></div>
                                   }
                                 </React.Fragment>
                               )
@@ -532,7 +551,7 @@ function App() {
                   </>
                   :
                   <>
-                  <h6 className="app-h6-without-margin">{index+1} : {COMMANDS_STR[c_result.command_id]}</h6>
+                  <h6 className="app-h6-without-margin">{index+1} : {COMMANDS_STR[c_result.command_id]} / {c_result.description}</h6>
                     {c_result.command_id === 0 &&
                       // <NotFocusedCommand1Component command_result={c_result}/>
                       <>
