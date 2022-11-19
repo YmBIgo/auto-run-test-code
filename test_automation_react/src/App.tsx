@@ -325,13 +325,14 @@ function App() {
         <li>右側のパネルで、URLを入力します (JSONをロードする場合は、2は飛ばしても大丈夫です)。</li>
         <li>左側のパネルで、自動化したい動作を入力します。
           <ul>
-            <li>変数や <a href="http://www.ic.daito.ac.jp/~mizutani/python/intro8_python.html">pythonの予約語</a> は数字以外を入力して下さい。</li>
-            <li>Xpath は ディベロッパーツールを使えばコピー出来ます。</li>
-            <li>一度だけ、結果チェックという内容の検証を行うことができます。</li>
+            <li>変数や <a href="http://www.ic.daito.ac.jp/~mizutani/python/intro8_python.html" target="_blank">pythonの予約語</a> は数字以外を入力して下さい。</li>
+            <li>Xpath は <a href="https://qiita.com/ywindish/items/5a992c49387d81df900e" target="_blank">ディベロッパーツールを使えばコピー</a>出来ます。</li>
+            <li>一度だけ、「結果チェック」という内容の検証を行うことができます。</li>
           </ul>
         </li>
         <li>動作を入力したら、右側のパネルの「結果を送信する」の緑のボタンを押します。１分ほどすれば結果が表示されます。</li>
       </ol>
+      <hr/>
       <div className="App">
       <div className="app-left" onClick={() => {unFocusLeftCommandElement();}}>
         <div className="app-left-command-title">
