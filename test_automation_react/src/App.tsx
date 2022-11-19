@@ -28,6 +28,9 @@ import Command5Output from "./component/CommandOutput/Command5Output"
 import Command6Output from "./component/CommandOutput/Command6Output"
 import Command7Output from "./component/CommandOutput/Command7Output"
 
+// Tracking
+import ReactGA from "react-ga4"
+
 type AWS_RESULT_TYPE = {
   file_name: string;
   result: string;
@@ -328,12 +331,25 @@ function App() {
       console.log(aws_result.variables)
       set_test_result_variables(aws_result.variables)
       set_test_is_loading(true)
+      ReactGA.initialize("G-2P6RH81C60")
+      ReactGA.send({
+        hitType: "pageview",
+        page: "/search"
+      })
     })
     .catch (error => {
       set_test_is_loading(null)
       set_test_result("テスト失敗")
     })
   }
+
+  useEffect(() => {
+    ReactGA.initialize("G-2P6RH81C60")
+    ReactGA.send({
+      hitType: "pageview",
+      page: "/"
+    })
+  }, [])
 
 // https://s270q3vddg.execute-api.us-west-1.amazonaws.com/default/runAutoCreatedTestCode
 // url="https://www.yahoo.co.jp"&code_json_str='[{"command_id":5,"xpath":"//*[@id=\"ContentWrapper\"]/header/section[1]/div/form/fieldset/span/input","xpath_index":1,"is_variable":false,"content":"test"},{"command_id":4,"xpath":"//*[@id=\"ContentWrapper\"]/header/section[1]/div/form/fieldset/span/button","xpath_index":1}]'
