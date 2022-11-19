@@ -107,8 +107,8 @@ function App() {
     download_content    += `commands,'${JSON.stringify(command_results).replace(/,/g, "\\,").replace(/'/g,"\\'")}'\n`
     download_content    += `assertion,${test_result}\n`
     download_content    += `image_url,${test_result_image}\n`
-    download_content    += "variables,"
-    for (let test_variable in Object.keys(test_result_variables)) {
+    download_content    += "variables,\n"
+    for (let test_variable in test_result_variables) {
       download_content  += `${test_variable},${test_result_variables[test_variable]}\n`
     }
     const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
