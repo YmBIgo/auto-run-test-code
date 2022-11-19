@@ -97,7 +97,25 @@ function App() {
     const random_str = (Math.random() * 1000000).toString(16).replace(/\./, "")
     const fileName = `test_automation_${random_str}.json`
     const download_content: {commands: COMMAND_ELEMENTS, url: string} = {commands: command_results, url: current_url}
-    const data = new Blob([JSON.stringify(download_content)], {type: 'text/json'})
+    const download_content_str = JSON.stringify(download_content)
+    downloadJSON([download_content_str], fileName, 'text/json')
+  }
+  const downloadTestResultJSON = () => {
+    const random_str = (Math.random() * 1000000).toString(16).replace(/\./, "")
+    const fileName = `test_result_${random_str}.csv`
+    let download_content = `url,${current_url}\n`
+    download_content    += `commands,'${JSON.stringify(command_results).replace(/,/g, "\\,").replace(/'/g,"\\'")}'\n`
+    download_content    += `assertion,${test_result}\n`
+    download_content    += `image_url,${test_result_image}\n`
+    download_content    += "variables,"
+    for (let test_variable in Object.keys(test_result_variables)) {
+      download_content  += `${test_variable},${test_result_variables[test_variable]}\n`
+    }
+    const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
+    downloadJSON([bom, download_content], fileName, 'text/csv')
+  }
+  const downloadJSON = (download_content: any, fileName: string, file_type: string) => {
+    const data = new Blob(download_content, {type: file_type})
     const jsonURL = window.URL.createObjectURL(data)
     const link = document.createElement('a')
     document.body.appendChild(link)
@@ -335,6 +353,7 @@ function App() {
           </ul>
         </li>
         <li>動作を入力したら、右側のパネルの「結果を送信する」の緑のボタンを押します。１分ほどすれば結果が表示されます。</li>
+        <li>AWSのリージョンがアメリカであるため、他言語対応サイトでは英語の結果しか表示されません。すみません。</li>
       </ol>
       <hr/>
       <div className="App">
@@ -652,6 +671,13 @@ function App() {
                   :
                   <></>
                 }
+                <input
+                  type="button"
+                  className="app-button-primary"
+                  style={{width: "200px"}}
+                  value="テスト結果をCSVでダウンロードする"
+                  onClick={() => downloadTestResultJSON()}
+                />
               </>
               :
               <div className="app-file-image-text">
