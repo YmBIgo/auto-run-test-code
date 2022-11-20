@@ -221,7 +221,8 @@ function App() {
   }
   const createCommandInputIfVersion = (index: number) => {
     reFocusIfCommandBlock(index)
-    const is_fin_exists = if_command_results.some((i_c_result) => {
+    if (!command_results[index] || !command_results[index].commands) return
+    const is_fin_exists = command_results[index].commands!.some((i_c_result) => {
       return i_c_result.command_id === 101
     })
     if (is_fin_exists === true) {
@@ -282,7 +283,8 @@ function App() {
   }
   const createCommandInputWhileVersion = (index: number) => {
     reFocusWhileCommandBlock(index)
-    const is_fin_exists = while_command_results.some((i_c_result) => {
+    if (!command_results[index].commands) return
+    const is_fin_exists = command_results[index].commands!.some((i_c_result) => {
       return i_c_result.command_id === 201
     })
     if (is_fin_exists === true) {
