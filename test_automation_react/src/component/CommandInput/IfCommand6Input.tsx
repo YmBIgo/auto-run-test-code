@@ -69,12 +69,12 @@ const Command6Input = (props: Props) => {
 			<br/>
 			<label><small>内容</small></label>
 			<br/>
-			{ (command_result.commands !== undefined && command_result.commands[if_index].is_variable !== undefined) ?
+			{ (command_result.commands && command_result.commands[if_index] && command_result.commands[if_index].is_variable !== undefined) ?
 			  <>
 			  { command_result.commands[if_index].is_variable === true ?
 			    <select
 			      className="app-select"
-			      onChange={(e) => setCommandResultEachNormal(e, "content", index, if_index)} value={command_result.commands !== undefined ? command_result.commands[if_index].content : ""}
+			      onChange={(e) => setCommandResultEachNormal(e, "content", index, if_index)} value={command_result.commands[if_index].content !== undefined ? command_result.commands[if_index].content : ""}
 			    >
 			      <option></option>
 			      {command_results.filter((c_r) => c_r.command_id === 0).map((result, r_index) => {
@@ -88,7 +88,7 @@ const Command6Input = (props: Props) => {
 			      type="text"
 			      className="app-text-input"
 			      onChange={(e) => setCommandResultEachNormal(e, "content", index, if_index)}
-			      value={command_result.commands !== undefined ? command_result.commands[if_index].content : ""}
+			      value={command_result.commands[if_index].content ? command_result.commands[if_index].content : ""}
 			    />
 			  }
 			  </>

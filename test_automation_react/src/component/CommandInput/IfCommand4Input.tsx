@@ -56,7 +56,13 @@ const Command4Input = (props: Props) => {
 			<br/>
 			<label><small>変数</small></label>
 			<br/>
-			<select className="app-select" onChange={(e) => setCommandResultEachNormal(e, "variable", index, if_index) } value={command_result.commands !== undefined ? command_result.commands[if_index].variable : ""}>
+			<select
+				className="app-select"
+				onChange={(e) => setCommandResultEachNormal(e, "variable", index, if_index) }
+				value={(command_result.commands && command_result.commands[if_index]
+						&& command_result.commands[if_index].variable !== undefined)
+						? command_result.commands[if_index].variable : ""}
+			>
 			  <option></option>
 			  {command_results.filter((c_r) => c_r.command_id === 0).map((result, index) => {
 			    return(

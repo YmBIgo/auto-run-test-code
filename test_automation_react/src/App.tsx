@@ -270,7 +270,7 @@ function App() {
   }
 
   // while
-  const createCommandInputWhereVersion = (index: number) => {
+  const createCommandInputWhileVersion = (index: number) => {
     reFocusWhileCommandBlock(index)
     const is_fin_exists = while_command_results.some((i_c_result) => {
       return i_c_result.command_id === 201
@@ -468,7 +468,7 @@ function App() {
                               )
                             })}
                           </select>
-                          <input type="button" className="app-button-primary" value="追加する" onClick={() => createCommandInputWhereVersion(index)}/>
+                          <input type="button" className="app-button-primary" value="追加する" onClick={() => createCommandInputWhileVersion(index)}/>
                         </div>
                         <div className="app-left-command-detail-area-small-down-arrow"></div>
                         <>
