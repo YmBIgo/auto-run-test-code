@@ -15,15 +15,15 @@ import Command6Output from "../../component/CommandOutput/Command6Output"
 type Props = {
 	setIfWhileCommandResultEachNormal: Function;
 	setCommandResultEachNormal: Function;
-	onChangeIfCommand: Function;
+	onChangeWhileCommand: Function;
 	createCommandInputWhileVersion: Function;
 	unFocusWhileCommandElement: Function;
 	reFocusWhileCommandElement: Function;
 	reFocusWhileCommandBlock: Function;
-	current_left_command_if_command: number;
+	current_left_command_while_command: number;
 	command_results: COMMAND_ELEMENTS;
 	command_result: COMMAND_ELEMENT;
-	if_command_results: COMMAND_ELEMENTS;
+	while_command_results: COMMAND_ELEMENTS;
 	index : number;
 	is_while_command_focused: number | null;
 }
@@ -35,11 +35,11 @@ const Command3Input = (props: Props) => {
 	const unFocusWhileCommandElement = props.unFocusWhileCommandElement
 	const reFocusWhileCommandElement = props.reFocusWhileCommandElement
 	const reFocusWhileCommandBlock = props.reFocusWhileCommandBlock
-	const onChangeIfCommand = props.onChangeIfCommand
-	const current_left_command_if_command = props.current_left_command_if_command
+	const onChangeWhileCommand = props.onChangeWhileCommand
+	const current_left_command_while_command = props.current_left_command_while_command
 	const index = props.index
 	const createCommandInputWhileVersion = props.createCommandInputWhileVersion
-	const if_command_results = props.if_command_results
+	const while_command_results = props.while_command_results
 	const command_results = props.command_results
 	const command_result = props.command_result
 	const is_while_command_focused = props.is_while_command_focused
@@ -67,7 +67,7 @@ const Command3Input = (props: Props) => {
 		  </div>
 		  <div className="app-left-command-detail-area-small" onClick={() => unFocusWhileCommandElement(index)}>
 		    <h6 className="app-h6-without-margin">命令入力</h6>
-		    <select className="app-select" onChange={(e) => onChangeIfCommand(e)} value={current_left_command_if_command}>
+		    <select className="app-select" onChange={(e) => onChangeWhileCommand(e)} value={current_left_command_while_command}>
 		      {COMMANDS_STR_WHILE_VERSION.map((c_str: string, i_c_index: number) => {
 		        return(
 		          <option value={COMMAND_STR_INDEX_WHILE_VERSION[i_c_index]} key={`while_command_${i_c_index}`}>{c_str}</option>
@@ -81,7 +81,7 @@ const Command3Input = (props: Props) => {
 		    {command_result.commands &&
 		      command_result.commands.map((while_command_result, w_c_index) => {
 		        return (
-		          <React.Fragment key={`if_command_${w_c_index}`}>
+		          <React.Fragment key={`while_command_${w_c_index}`}>
 		            { is_while_command_focused === w_c_index ?
 		              <div className="app-left-command-detail-area-small" onClick={(e) => {reFocusWhileCommandElement(index, w_c_index); e.stopPropagation()}}>
 		                <h6 className="app-h6-without-margin">{COMMAND_STR_HASH[while_command_result.command_id]}</h6>

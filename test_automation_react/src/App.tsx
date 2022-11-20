@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import axios from "axios"
 import "./css/index.css"
+
 import {COMMANDS, COMMANDS_IF_VERSION,
         COMMANDS_STR, COMMANDS_STR_IF_VERSION, COMMANDS_STR_WHILE_VERSION,
         COMMAND_STR_HASH, COMMAND_STR_INDEX_IF_VERSION, COMMAND_STR_INDEX_WHILE_VERSION,
@@ -9,16 +10,18 @@ import {COMMAND_ELEMENTS, COMMAND_ELEMENT,
         COMMAND_IF_ELEMENTS, COMMAND_WHILE_ELEMENTS,
         COMMAND_ELEMENT1, COMMAND_ELEMENT2, COMMAND_ELEMENT3,
         COMMAND_ELEMENT4, COMMAND_ELEMENT5, COMMAND_ELEMENT6} from "./type/command"
+
 // Command Input
 import Command1Input from "./component/CommandInput/Command1Input"
 import Command2Input from "./component/CommandInput/Command2Input"
+import Command3Input from "./component/CommandInput/Command3Input"
 import Command4Input from "./component/CommandInput/Command4Input"
 import Command5Input from "./component/CommandInput/Command5Input"
 import Command6Input from "./component/CommandInput/Command6Input"
 import Command7Input from "./component/CommandInput/Command7Input"
-import IfCommand4Input from "./component/CommandInput/IfCommand4Input"
-import IfCommand5Input from "./component/CommandInput/IfCommand5Input"
-import IfCommand6Input from "./component/CommandInput/IfCommand6Input"
+// import IfCommand4Input from "./component/CommandInput/IfCommand4Input"
+// import IfCommand5Input from "./component/CommandInput/IfCommand5Input"
+// import IfCommand6Input from "./component/CommandInput/IfCommand6Input"
 // Command Output
 import Command1Output from "./component/CommandOutput/Command1Output"
 import Command2Output from "./component/CommandOutput/Command2Output"
@@ -53,15 +56,16 @@ function App() {
   const [is_left_title_json, set_is_left_title_json] = useState<boolean>(false)
   // left web ui
   const [is_left_ui_focused, set_is_left_ui_focused] = useState<number | null>(null)
-  const [current_left_command_if_command, set_current_left_command_if_command] = useState<number>(0)
   // left web ui if
   const [if_command_results, set_if_command_results] = useState<COMMAND_IF_ELEMENTS[]>([])
   const [left_command_if_command_is_disabled, set_left_command_if_command_is_disabled] = useState<boolean>(false)
   const [is_if_command_focused, set_is_if_command_focused] = useState<number | null>(null)
+  const [current_left_command_if_command, set_current_left_command_if_command] = useState<number>(0)
   // left web ui while
   const [while_command_results, set_while_command_results] = useState<COMMAND_WHILE_ELEMENTS[]>([])
   const [left_command_while_command_is_disabled, set_left_command_while_command_is_disabled] = useState<boolean>(false)
   const [is_while_command_focused, set_is_while_command_focused] = useState<number | null>(null)
+  const [current_left_command_while_command, set_current_left_command_while_command] = useState<number>(0)
   // command result
   const [command_results, set_command_results] = useState<COMMAND_ELEMENTS>([])
 
@@ -164,6 +168,13 @@ function App() {
   const reFocusLeftCommandElement = (index: number) => {
     set_right_command_input_is_disabled(true)
     set_is_left_ui_focused(index)
+    const current_command_id = command_results[index].command_id
+    if (current_command_id === 1) {
+      set_if_command_results(command_results[index].commands as COMMAND_IF_ELEMENTS[])
+    }
+    if (current_command_id === 2) {
+      set_while_command_results(command_results[index].commands as COMMAND_WHILE_ELEMENTS[])
+    }
   }
   const unFocusLeftCommandElement = () => {
     set_right_command_input_is_disabled(false)
@@ -205,10 +216,6 @@ function App() {
     set_left_command_if_command_is_disabled(false)
     set_is_if_command_focused(null)
   }
-  const unFocusIfCommandElement2 = () => {
-    set_left_command_if_command_is_disabled(false)
-    set_is_if_command_focused(null)
-  }
   const onChangeIfCommand = (e: React.ChangeEvent<HTMLSelectElement>) => {
     set_current_left_command_if_command(Number(e.target.value))
   }
@@ -232,7 +239,7 @@ function App() {
     } else if (current_left_command_if_command === 101) {
       created_command = {command_id: 101}
     }
-    set_if_command_results([...if_command_results, created_command])
+    set_if_command_results([created_command])
     set_command_results((prev_command_results: COMMAND_ELEMENTS) => {
       const newly_insert_command_result: COMMAND_ELEMENT2 = {command_id: 1, commands: [...if_command_results, created_command], condition1: prev_command_results[index].condition1!, condition2: prev_command_results[index].condition2!, condition_sign: prev_command_results[index].condition_sign!, description: prev_command_results[index].description!}
       if (prev_command_results[index].condition1 !== undefined && prev_command_results[index].condition2 !== undefined && prev_command_results[index].condition_sign !== undefined ) {
@@ -270,6 +277,9 @@ function App() {
   }
 
   // while
+  const onChangeWhileCommand = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    set_current_left_command_while_command(Number(e.target.value))
+  }
   const createCommandInputWhileVersion = (index: number) => {
     reFocusWhileCommandBlock(index)
     const is_fin_exists = while_command_results.some((i_c_result) => {
@@ -283,14 +293,14 @@ function App() {
     set_is_while_command_focused(newly_created_while_command_id)
     set_left_command_while_command_is_disabled(true)
     let created_command: COMMAND_WHILE_ELEMENTS = {command_id: 3, xpath: "", xpath_index: 0, variable: "", description: ""}
-    if (current_left_command_if_command === 4) {
+    if (current_left_command_while_command === 4) {
       created_command = {command_id: 4, xpath: "", xpath_index: 0, description: ""}
-    } else if (current_left_command_if_command === 5) {
+    } else if (current_left_command_while_command === 5) {
       created_command = {command_id: 5, xpath: "", xpath_index: 0, is_variable: false, content: "", description: ""}
-    } else if (current_left_command_if_command === 201) {
+    } else if (current_left_command_while_command === 201) {
       created_command = {command_id: 201}
     }
-    set_while_command_results([...while_command_results, created_command])
+    set_while_command_results([created_command])
     set_command_results((prev_command_results: COMMAND_ELEMENTS) => {
       const newly_insert_command_result: COMMAND_ELEMENT3 = {command_id: 2, commands: [...while_command_results, created_command], condition1: prev_command_results[index].condition1!, description: prev_command_results[index].description!}
       if (prev_command_results[index].condition1 !== undefined ) {
@@ -399,7 +409,7 @@ function App() {
             <React.Fragment key={`command_element_${index}`}>
               <div
                 className={ is_left_ui_focused === index ? "app-left-command-element focused-app-left-command-element" : "app-left-command-element"}
-                onClick={(e) => {reFocusLeftCommandElement(index); unFocusIfCommandElement(index);unFocusWhileCommandElement(index);e.stopPropagation()}}
+                onClick={(e) => {unFocusIfCommandElement(index);unFocusWhileCommandElement(index);reFocusLeftCommandElement(index);e.stopPropagation()}}
               >
                 { is_left_ui_focused === index ?
                   <>
@@ -439,108 +449,21 @@ function App() {
                       />
                     }
                     {c_result.command_id === 2 &&
-                      <>
-                        <label><small>コメント</small></label>
-                        <br/>
-                        <input
-                          type="text"
-                          className="app-text-input"
-                          style={{width: "90%"}}
-                          onChange={(e) => setCommandResultEachNormal(e, "description", index)}
-                          value={(c_result.description) ? c_result.description : ""}
-                          placeholder="コメントを入力して下さい(任意)"
-                        />
-                        <br/>
-                        <br/>
-                        <div className="app-left-command-detail-area-small" onClick={() => {unFocusWhileCommandElement(index); reFocusWhileCommandBlock(index)}}>
-                          <h6 className="app-h6-without-margin">条件入力</h6>
-                          <hr/>
-                          <label><small>繰り返す回数</small></label>
-                          <br/>
-                          <input type="number" className="app-text-input" value={c_result.condition1} onChange={(e) => setCommandResultEachNormal(e, "condition1", index)} />
-                        </div>
-                        <div className="app-left-command-detail-area-small" onClick={() => unFocusWhileCommandElement(index)}>
-                          <h6 className="app-h6-without-margin">命令入力</h6>
-                          <select className="app-select" onChange={(e) => onChangeIfCommand(e)} value={current_left_command_if_command}>
-                            {COMMANDS_STR_WHILE_VERSION.map((c_str: string, i_c_index: number) => {
-                              return(
-                                <option value={COMMAND_STR_INDEX_WHILE_VERSION[i_c_index]} key={`while_command_${i_c_index}`}>{c_str}</option>
-                              )
-                            })}
-                          </select>
-                          <input type="button" className="app-button-primary" value="追加する" onClick={() => createCommandInputWhileVersion(index)}/>
-                        </div>
-                        <div className="app-left-command-detail-area-small-down-arrow"></div>
-                        <>
-                          {c_result.commands &&
-                            c_result.commands.map((while_command_result, w_c_index) => {
-                              return (
-                                <React.Fragment key={`if_command_${w_c_index}`}>
-                                  { is_while_command_focused === w_c_index ?
-                                    <div className="app-left-command-detail-area-small" onClick={(e) => {reFocusWhileCommandElement(index, w_c_index); e.stopPropagation()}}>
-                                      <h6 className="app-h6-without-margin">{COMMAND_STR_HASH[while_command_result.command_id]}</h6>
-                                      <hr/>
-                                      { while_command_result.command_id === 3 &&
-                                        <IfCommand4Input
-                                          setCommandResultEachNormal={setIfWhileCommandResultEachNormal}
-                                          command_results={command_results}
-                                          command_result={c_result}
-                                          index={index}
-                                          if_index={w_c_index}
-                                        />
-                                      }
-                                      { while_command_result.command_id === 4 &&
-                                        <IfCommand5Input
-                                          setCommandResultEachNormal={setIfWhileCommandResultEachNormal}
-                                          command_results={command_results}
-                                          command_result={c_result}
-                                          index={index}
-                                          if_index={w_c_index}
-                                        />
-                                      }
-                                      { while_command_result.command_id === 5 &&
-                                        <IfCommand6Input
-                                          setCommandResultEachNormal={setIfWhileCommandResultEachNormal}
-                                          command_results={command_results}
-                                          command_result={c_result}
-                                          index={index}
-                                          if_index={w_c_index}
-                                        />
-                                      }
-                                      { while_command_result.command_id === 201 &&
-                                        <div className="app-left-command-detail-area">
-                                          <small>While文終了</small>
-                                        </div>
-                                      }
-                                    </div>
-                                  :
-                                    <div className="app-left-command-detail-area-small" onClick={(e) => {reFocusWhileCommandElement(index, w_c_index); e.stopPropagation()}}>
-                                      <h6 className="app-h6-without-margin">{COMMAND_STR_HASH[while_command_result.command_id]} / {while_command_result.description}</h6>
-                                      { while_command_result.command_id === 3 &&
-                                        <Command4Output command_result={while_command_result}/>
-                                      }
-                                      { while_command_result.command_id === 4 &&
-                                        <Command5Output command_result={while_command_result}/>
-                                      }
-                                      { while_command_result.command_id === 5 &&
-                                        <Command6Output command_result={while_command_result}/>
-                                      }
-                                      { while_command_result.command_id === 201 &&
-                                        <>
-                                          <hr/>
-                                          <small>While文終了</small>
-                                        </>
-                                      }
-                                    </div>
-                                  }
-                                  { while_command_result.command_id !== 201 &&
-                                    <div className="app-left-command-detail-area-small-down-arrow"></div>
-                                  }
-                                </React.Fragment>
-                              )
-                          })}
-                        </>
-                      </>
+                      <Command3Input
+                        setIfWhileCommandResultEachNormal={setIfWhileCommandResultEachNormal}
+                        setCommandResultEachNormal={setCommandResultEachNormal}
+                        onChangeWhileCommand={onChangeWhileCommand}
+                        createCommandInputWhileVersion={createCommandInputWhileVersion}
+                        unFocusWhileCommandElement={unFocusWhileCommandElement}
+                        reFocusWhileCommandElement={reFocusWhileCommandElement}
+                        reFocusWhileCommandBlock={reFocusWhileCommandBlock}
+                        current_left_command_while_command={current_left_command_while_command}
+                        command_results={command_results}
+                        command_result={c_result}
+                        while_command_results={while_command_results}
+                        index={index}
+                        is_while_command_focused={is_while_command_focused}
+                      />
                     }
                     {c_result.command_id === 3 &&
                       <div className="app-left-command-detail-area">

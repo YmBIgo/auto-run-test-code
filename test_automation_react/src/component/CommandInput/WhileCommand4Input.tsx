@@ -9,7 +9,7 @@ type Props = {
 	while_index : number;
 }
 
-const Command4Input = (props: Props) => {
+const WhileCommand4Input = (props: Props) => {
 
 	const setCommandResultEachNormal = props.setCommandResultEachNormal
 	const command_results = props.command_results
@@ -73,4 +73,4 @@ const Command4Input = (props: Props) => {
 	)
 }
 
-export default Command4Input
+export default WhileCommand4Input
