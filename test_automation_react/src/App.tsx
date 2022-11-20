@@ -363,8 +363,8 @@ function App() {
         <li>右側のパネルで、URLを入力します (JSONをロードする場合は、2は飛ばしても大丈夫です)。</li>
         <li>左側のパネルで、自動化したい動作を入力します。
           <ul>
-            <li>変数や <a href="http://www.ic.daito.ac.jp/~mizutani/python/intro8_python.html" target="_blank">pythonの予約語</a> は数字以外を入力して下さい。</li>
-            <li>Xpath は <a href="https://qiita.com/ywindish/items/5a992c49387d81df900e" target="_blank">ディベロッパーツールを使えばコピー</a>出来ます。</li>
+            <li>変数は、<a href="http://www.ic.daito.ac.jp/~mizutani/python/intro8_python.html" target="_blank">pythonの予約語</a> や数字以外を入力して下さい。</li>
+            <li>Xpath は、<a href="https://qiita.com/ywindish/items/5a992c49387d81df900e" target="_blank">ディベロッパーツールを使えばコピー</a>出来ます。</li>
             <li>一度だけ、「結果チェック」という内容の検証を行うことができます。</li>
           </ul>
         </li>
@@ -634,7 +634,7 @@ function App() {
       </div>
       <div className="app-right">
         <h4 className="app-h4-without-margin">サイトURLを入力して下さい。</h4>
-        <input className="app-text-input" style={{width: "300px"}} type="text" value={current_url} onChange={(e) => {set_current_url(e.target.value); set_right_command_input_is_disabled(false)}}/>
+        <input className="app-text-input" style={{width: "300px"}} type="text" value={current_url} onChange={(e) => {set_current_url(e.target.value); set_right_command_input_is_disabled(false)}} placeholder="httpかhttpsから始めて下さい"/>
         <hr/>
         <h4 className="app-h4-without-margin">{current_right_message}</h4>
         <select className="app-select" disabled = {right_command_input_is_disabled} value={current_right_command} onChange={(e) => onChangeRightCommand(e)} >
